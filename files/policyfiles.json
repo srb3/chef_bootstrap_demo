@@ -1,0 +1,59 @@
+[
+  {
+    "name": "infra_base",
+    "include_policy": {},
+    "default_source": ":supermarket, 'https://supermarket.chef.io'",
+    "cookbooks":  {
+      "acme_base": "github: 'srb3/acme_base', tag: 'v0.0.1'",
+      "chef-client": "github: 'chef-cookbooks/chef-client', tag: 'v11.5.0'",
+      "audit": "github: 'chef-cookbooks/audit', tag: 'v9.0.1'"
+    },
+    "run_list": ["acme_base::default"],
+    "groups": ["dev","stage","prod"]
+  },
+  {
+    "name": "windows_app_server",
+    "default_source": ":supermarket, 'https://supermarket.chef.io'",
+    "include_policy": {
+      "infra_base": "path: './infra_base.lock.json'"
+    },
+    "cookbooks":  {
+      "chef-and-dsc": "github: 'smurawski/chef-and-dsc', branch: 'master'"
+    },
+    "run_list": ["acme_base::default","chef-and-dsc::default"],
+    "groups": ["dev","stage","prod"] 
+  },
+  {
+    "name": "linux_app_server",
+    "default_source": ":supermarket, 'https://supermarket.chef.io'",
+    "include_policy": {
+      "infra_base": "path: './infra_base.lock.json'"
+    },
+    "cookbooks":  {
+      "linux_app": "github: 'srb3/linux_app', tag: 'v0.0.1'",
+      "acme_application": "github: 'srb3/acme_application', tag: 'v0.0.2'"
+    },
+    "run_list": ["acme_base::default","linux_app::default"],
+    "groups": ["dev","stage","prod"] 
+  },
+  {
+    "name": "linux_hardening",
+    "include_policy": {},
+    "default_source": ":supermarket, 'https://supermarket.chef.io'",
+    "cookbooks":  {
+      "os-hardening": "github: 'dev-sec/chef-os-hardening', tag: 'v4.0.0'"
+    },
+    "run_list": ["os-hardening::default"],
+    "groups": ["dev","stage","prod"]
+  },
+  {
+    "name": "windows_hardening",
+    "include_policy": {},
+    "default_source": ":supermarket, 'https://supermarket.chef.io'",
+    "cookbooks":  {
+      "windows_schannel": "github: 'srb3/windows_schannel', branch: '2019_update'"
+    },
+    "run_list": ["windows_schannel::default"],
+    "groups": ["dev","stage","prod"]
+  }
+]
